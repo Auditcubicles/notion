@@ -1,130 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Montserrat:900">
-    <title>Document</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Countdown</title>
+  <style>
+    :root {
+      --bg-color: #191919;       /* Matches Notion dark mode background */
+      --card-bg: #222222;
+      --text-color: #ffffff;
+      --accent-color: #ff5555;   /* Highlight color */
+      --muted-color: #888888;
+    }
 
-body{
-    background-color: white;
-}
-  
-#timer {
-  color: #eeeeee;
-  text-align: center;
-  text-transform: uppercase;
-  font-family: 'Lato', sans-serif;
-  font-size: .7em;
-  letter-spacing: 5px;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-.days, .hours, .minutes, {
-  display: inline-block;
-  padding: 20px;
-  width: 100px;
-  border-radius: 5px;
-}
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-.days {
-  background: #EF2F3C;
-}
+    .container {
+      background: var(--card-bg);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px 32px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      max-width: 400px;
+      width: 100%;
+    }
 
-.hours {
-  background: #eeeeee;
-  color: #183059;
-}
+    .title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--muted-color);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
 
-.minutes {
-  background: #276FBF;
-}
+    .countdown {
+      display: flex;
+      justify-content: space-around;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-.seconds {
-  background: #F0A202;
-}
+    .time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.numbers {
-  font-family: 'Montserrat', sans-serif;
-  color:  #183059;
-  font-size: 4em;
-  text-align: center;
-}
+    .number {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      line-height: 1;
+    }
 
-.white {
-  position: absolute;
-  background:  #eeeeee;
-  height: 85px;
-  width: 75px;
-  left: 30%;
-  top: 2%;
-}
+    .label {
+      font-size: 0.75rem;
+      color: var(--muted-color);
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
 
-.red {
-  position: absolute;
-  background:  #EF2F3C;
-  left: 18%;
-  top: 9%;
-  height: 65px;
-  width: 70px;
- 
-}
-
-.blue {
-  position: absolute;
-  background:  #276FBF;
-  height: 80px;
-  width: 80px;
-  left: 60%;
-  top: 5%;
-
-
-}
-
-
-    </style>
+    .target-date {
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      margin-top: 12px;
+    }
+  </style>
 </head>
 <body>
+
+  <div class="container">
+    <div class="title" id="exam-name">Final Exams</div>
     
-<div id="timer">
-
-    <div class="days"> 
-        <div id="days" class="numbers "> </div>days</div> 
-      <div class="hours"> 
-        <div  id="hours" class="numbers"> </div>hours</div> 
-      <div class="minutes"> 
-        <div  id="minutes" class="numbers"> </div>minutes</div> 
+    <div class="countdown">
+      <div class="time-box">
+        <span class="number" id="days">00</span>
+        <span class="label">Days</span>
       </div>
+      <div class="time-box">
+        <span class="number" id="hours">00</span>
+        <span class="label">Hours</span>
+      </div>
+      <div class="time-box">
+        <span class="number" id="mins">00</span>
+        <span class="label">Mins</span>
+      </div>
+      <div class="time-box">
+        <span class="number" id="secs">00</span>
+        <span class="label">Secs</span>
+      </div>
+    </div>
 
-</div>
+    <div class="target-date" id="date-display">Targeting...</div>
+  </div>
 
-</body>
-<script>
-    const year = new Date().getFullYear();
-const myDate = new Date('Nov 04, 2026 14:00:00');
-console.log(myDate);
+  <script>
+    // Set your exam date and title here:
+    const EXAM_NAME = "Final Board Exams";
+    const EXAM_DATE = "2026-12-01T09:00:00"; // Format: YYYY-MM-DDTHH:MM:SS
 
-// countdown
-let timer = setInterval(function() {
+    document.getElementById("exam-name").innerText = EXAM_NAME;
+    
+    const targetDate = new Date(EXAM_DATE).getTime();
+    document.getElementById("date-display").innerText = "Exam Date: " + new Date(EXAM_DATE).toLocaleDateString(undefined, {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
 
-  // get today's date
-  const today = new Date().getTime();
+    const timer = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
 
-  // get the difference
-  const diff = myDate - today;
+      if (distance < 0) {
+        clearInterval(timer);
+        document.querySelector(".countdown").innerHTML = "<h2 style='color:var(--accent-color);'>Exam Time! Good luck!</h2>";
+        return;
+      }
 
-  // math
-  let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-  // display
-  document.getElementById("days").innerHTML=days
-  document.getElementById("hours").innerHTML=hours
-  document.getElementById("minutes").innerHTML=minutes
-
-
-
-}, 1);
-</script>
-</html>
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
